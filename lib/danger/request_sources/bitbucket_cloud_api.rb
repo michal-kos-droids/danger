@@ -13,7 +13,7 @@ module Danger
         @username = environment["DANGER_BITBUCKETCLOUD_USERNAME"]
         @password = environment["DANGER_BITBUCKETCLOUD_PASSWORD"]
         self.project, self.slug = repo_slug.split("/")
-        self.access_token = fetch_access_token(environment)
+        self.access_token = environment["DANGER_BITBUCKETCLOUD_REPO_ACCESSTOKEN"] || fetch_access_token(environment)
         self.pull_request_id = pull_request_id || fetch_pr_from_branch(branch_name)
         self.host = "https://bitbucket.org/"
       end
@@ -40,8 +40,7 @@ module Danger
 
       def credentials_given?
         @my_uuid && !@my_uuid.empty? &&
-          @username && !@username.empty? &&
-          @password && !@password.empty?
+          ((@username && !@username.empty? && @password && !@password.empty?) || (@access_token && !@access_token.empty?))
       end
 
       def pull_request(*)
