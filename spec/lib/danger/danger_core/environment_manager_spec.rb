@@ -115,6 +115,23 @@ RSpec.describe Danger::EnvironmentManager, use: :ci_helper do
         expect(Danger::EnvironmentManager.local_ci_source(system_env)).to eq nil
       end
     end
+
+    context "when Local Only Git Repo is valid" do
+      it "loads Local Only Git Repo" do
+        with_localonlygitrepo_setup do |system_env|
+          expect(described_class.local_ci_source(system_env)).to eq Danger::LocalOnlyGitRepo
+        end
+      end
+
+      it "loads Local Only Git Repo ignoring other valid sources" do
+        with_bitrise_setup_and_is_a_pull_request do |system_env_bitrise|
+          with_localonlygitrepo_setup do |system_env_local_only|
+            system_env = system_env_bitrise.merge(system_env_local_only)
+            expect(described_class.local_ci_source(system_env)).to eq Danger::LocalOnlyGitRepo
+          end
+        end
+      end
+    end
   end
 
   describe ".pr?" do
@@ -416,7 +433,7 @@ RSpec.describe Danger::EnvironmentManager, use: :ci_helper do
         danger_em.raise_error_for_no_request_source(req_src_env, ui)
       end.to raise_error(SystemExit)
 
-      expect(ui.string).to include("For your BitbucketCloud repo, you need to expose: DANGER_BITBUCKETCLOUD_USERNAME, DANGER_BITBUCKETCLOUD_UUID, DANGER_BITBUCKETCLOUD_PASSWORD")
+      expect(ui.string).to include("For your BitbucketCloud repo, you need to expose: DANGER_BITBUCKETCLOUD_UUID")
     end
 
     it "handles throwing out all kinds of info when the repo url isnt recognised" do
@@ -434,7 +451,7 @@ RSpec.describe Danger::EnvironmentManager, use: :ci_helper do
         " - GitHub: DANGER_GITHUB_API_TOKEN",
         " - GitLab: DANGER_GITLAB_API_TOKEN",
         " - BitbucketServer: DANGER_BITBUCKETSERVER_USERNAME, DANGER_BITBUCKETSERVER_PASSWORD, DANGER_BITBUCKETSERVER_HOST",
-        " - BitbucketCloud: DANGER_BITBUCKETCLOUD_USERNAME, DANGER_BITBUCKETCLOUD_UUID, DANGER_BITBUCKETCLOUD_PASSWORD"
+        " - BitbucketCloud: DANGER_BITBUCKETCLOUD_UUID"
       ]
       messages.each do |m|
         expect(ui.string).to include(m)

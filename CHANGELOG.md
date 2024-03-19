@@ -11,8 +11,29 @@
 ## master
 
 <!-- Your comment below here -->
-
+* Always use `LocalOnlyGitRepo` source with `dry_run` command - [@imaginaris](https://github.com/imaginaris) [#1452](https://github.com/danger/danger/pull/1452)
+* Support repository access token on Bitbucket Cloud - [@manicmaniac](https://github.com/manicmaniac) [#1481](https://github.com/danger/danger/pull/1481)
+* Update "What is Danger?" in README - [@manicmaniac](https://github.com/manicmaniac) [#1482](https://github.com/danger/danger/pull/1482)
+* Fix broken YARD documents - [@manicmaniac](https://github.com/manicmaniac) [#1484](https://github.com/danger/danger/pull/1484)
 <!-- Your comment above here -->
+
+## 9.4.3
+
+* Add keyword arguments to MessageAggregator.aggregate for Ruby 3.X compatibility - [@dirtyhabits97](https://github.com/dirtyhabits97) [#1466](https://github.com/danger/danger/pull/1466)
+* Fix: remove stale violations when there are no new violations to report - [@iangmaia](https://github.com/iangmaia) [#1477](https://github.com/danger/danger/pull/1477)
+* Fix compatibility issue with Octokit >= 8 - [@manicmaniac](https://github.com/manicmaniac) [#1479](https://github.com/danger/danger/pull/1479)
+
+## 9.4.2
+
+* Reduce the minimum required Octokit version - [@mattr-](https://github.com/mattr-) [#1471](https://github.com/danger/danger/pull/1471)
+
+## 9.4.1
+
+* Update Octokit to have no upper bounds - [@ngan](https://github.com/ngan) [#1470](https://github.com/danger/danger/pull/1470)
+
+## 9.4.0
+
+* Update Octokit - [@ngan](https://github.com/ngan) [#1460](https://github.com/danger/danger/pull/1460)
 
 ## 9.3.2
 
