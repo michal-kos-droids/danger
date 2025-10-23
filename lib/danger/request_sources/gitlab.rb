@@ -71,18 +71,16 @@ module Danger
       def mr_comments
         # @raw_comments contains what we got back from the server.
         # @comments contains Comment objects (that have less information)
-        @comments ||= if supports_inline_comments
-                        @raw_comments = mr_discussions
-                          .auto_paginate
-                          .flat_map { |discussion| discussion.notes.map { |note| note.to_h.merge({ "discussion_id" => discussion.id }) } }
-                        @raw_comments
-                          .map { |comment| Comment.from_gitlab(comment) }
-                      else
-                        @raw_comments = client.merge_request_comments(ci_source.repo_slug, ci_source.pull_request_id, per_page: 100)
-                          .auto_paginate
-                        @raw_comments
-                          .map { |comment| Comment.from_gitlab(comment) }
-                      end
+        if supports_inline_comments
+          @raw_comments = mr_discussions
+            .auto_paginate
+            .flat_map { |discussion| discussion.notes.map { |note| note.to_h.merge({ "discussion_id" => discussion.id }) } }
+        else
+          @raw_comments = client.merge_request_comments(ci_source.repo_slug, ci_source.pull_request_id, per_page: 100)
+            .auto_paginate
+        end
+        @comments ||= @raw_comments
+          .map { |comment| Comment.from_gitlab(comment) }
       end
 
       def mr_discussions
@@ -216,12 +214,11 @@ module Danger
             previous_violations: previous_violations
           }.merge(main_violations))
 
-          comment_result =
-            if should_create_new_comment
-              client.create_merge_request_note(ci_source.repo_slug, ci_source.pull_request_id, body)
-            else
-              client.edit_merge_request_note(ci_source.repo_slug, ci_source.pull_request_id, last_comment.id, body)
-            end
+          if should_create_new_comment
+            client.create_merge_request_note(ci_source.repo_slug, ci_source.pull_request_id, body)
+          else
+            client.edit_merge_request_note(ci_source.repo_slug, ci_source.pull_request_id, last_comment.id, body)
+          end
         end
       end
 
@@ -304,7 +301,7 @@ module Danger
 
       # @return [String] A URL to the specific file, ready to be downloaded
       def file_url(organisation: nil, repository: nil, ref: nil, branch: nil, path: nil)
-        ref ||= (branch || "master")
+        ref ||= branch || "master"
         # According to GitLab Repositories API docs path and id(slug) should be encoded.
         path = URI.encode_www_form_component(path)
         repository = URI.encode_www_form_component(repository)
@@ -395,7 +392,7 @@ module Danger
         is_markdown_content = kind == :markdown
         emoji = { warning: "warning", error: "no_entry_sign", message: "book" }[kind]
 
-        messages.reject do |m|
+        messages.reject do |m| # rubocop:todo Metrics/BlockLength
           next false unless m.file && m.line
           # Reject if it's out of range and in dismiss mode
           next true if dismiss_out_of_range_messages_for(kind) && is_out_of_range(mr_changes.changes, m)

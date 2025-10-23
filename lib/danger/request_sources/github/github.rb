@@ -77,7 +77,24 @@ module Danger
       end
 
       def pr_diff
-        @pr_diff ||= client.pull_request(ci_source.repo_slug, ci_source.pull_request_id, accept: "application/vnd.github.v3.diff")
+        # This is a hack to get the file patch into a format that parse-diff accepts
+        # as the GitHub API for listing pull request files is missing file names in the patch.
+        prefixed_patch = lambda do |file:|
+          <<~PATCH
+          diff --git a/#{file['filename']} b/#{file['filename']}
+          --- a/#{file['filename']}
+          +++ b/#{file['filename']}
+          #{file['patch']}
+          PATCH
+        end
+
+        files = client.pull_request_files(
+          ci_source.repo_slug,
+          ci_source.pull_request_id,
+          accept: "application/vnd.github.v3.diff"
+        )
+
+        @pr_diff ||= files.map { |file| prefixed_patch.call(file: file) }.join("\n")
       end
 
       def review
@@ -312,7 +329,7 @@ module Danger
         is_markdown_content = kind == :markdown
         emoji = { warning: "warning", error: "no_entry_sign", message: "book" }[kind]
 
-        messages.reject do |m|
+        messages.reject do |m| # rubocop:todo Metrics/BlockLength
           next false unless m.file && m.line
 
           position = find_position_in_diff diff_lines, m, kind
@@ -379,12 +396,12 @@ module Danger
         range_header_regexp = /@@ -([0-9]+)(,([0-9]+))? \+(?<start>[0-9]+)(,(?<end>[0-9]+))? @@.*/
         file_header_regexp = %r{^diff --git a/.*}
 
-        pattern = "+++ b/" + message.file + "\n"
+        pattern = "+++ b/#{message.file}\n"
         file_start = diff_lines.index(pattern)
 
         # Files containing spaces sometimes have a trailing tab
         if file_start.nil?
-          pattern = "+++ b/" + message.file + "\t\n"
+          pattern = "+++ b/#{message.file}\t\n"
           file_start = diff_lines.index(pattern)
         end
 

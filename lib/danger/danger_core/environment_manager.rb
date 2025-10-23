@@ -87,13 +87,14 @@ module Danger
     private
 
     def get_repo_source(repo_url)
-      if repo_url =~ /github/i
+      case repo_url
+      when /github/i
         RequestSources::GitHub
-      elsif repo_url =~ /gitlab/i
+      when /gitlab/i
         RequestSources::GitLab
-      elsif repo_url =~ /bitbucket\.(org|com)/i
+      when /bitbucket\.(org|com)/i
         RequestSources::BitbucketCloud
-      elsif repo_url =~ /\.visualstudio\.com/i || repo_url =~ /dev\.azure\.com/i
+      when /\.visualstudio\.com/i, /dev\.azure\.com/i
         RequestSources::VSTS
       end
     end
@@ -108,7 +109,7 @@ module Danger
         title = "For Danger to run on this project, you need to expose a set of following the ENV vars:\n#{RequestSources::RequestSource.available_source_names_and_envs.join("\n")}"
       end
 
-      [title, (subtitle || "")]
+      [title, subtitle || ""]
     end
 
     def ui_display_no_request_source_error_message(ui, env, title, subtitle)

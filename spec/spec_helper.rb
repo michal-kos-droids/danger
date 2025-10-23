@@ -12,7 +12,7 @@ require "webmock"
 require "webmock/rspec"
 require "json"
 
-Dir["spec/support/**/*.rb"].each { |file| require(file) }
+Dir["spec/support/**/*.rb"].sort.each { |file| require(file) }
 
 RSpec.configure do |config|
   config.filter_gems_from_backtrace "bundler"
@@ -49,7 +49,6 @@ def make_temp_file(contents)
   file
 end
 
-# rubocop:disable Lint/NestedMethodDefinition
 def testing_ui
   @output = StringIO.new
   @err = StringIO.new
@@ -69,7 +68,6 @@ def testing_ui
 
   cork
 end
-# rubocop:enable Lint/NestedMethodDefinition
 
 def testing_dangerfile(env = stub_env)
   env_manager = Danger::EnvironmentManager.new(env, testing_ui)
@@ -112,17 +110,17 @@ def with_git_repo(origin: "git@github.com:artsy/eigen")
   Dir.mktmpdir do |dir|
     Dir.chdir dir do
       `git init -b master`
-      File.open(dir + "/file1", "w") {}
+      File.open("#{dir}/file1", "w") {}
       `git add .`
       `git commit -m "ok"`
 
       `git checkout -b new --quiet`
-      File.open(dir + "/file2", "w") {}
+      File.open("#{dir}/file2", "w") {}
       `git add .`
       `git commit -m "another"`
       `git remote add origin #{origin}`
 
-      Dir.mkdir(dir + "/subdir")
+      Dir.mkdir("#{dir}/subdir")
 
       yield dir
     end

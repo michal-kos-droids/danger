@@ -139,7 +139,7 @@ module Danger
       end
 
       def submit_inline_comments!(warnings: [], errors: [], messages: [], markdowns: [], previous_violations: [], danger_id: "danger")
-        # Avoid doing any fetchs if there's no inline comments
+        # Avoid doing any fetches if there's no inline comments
         return {} if (warnings + errors + messages + markdowns).select(&:inline?).empty?
 
         pr_threads = @api.fetch_last_comments
@@ -149,7 +149,6 @@ module Danger
 
           next comment_content.include?("generated_by_#{danger_id}")
         end
-        non_danger_threads = pr_threads - danger_threads
 
         warnings = submit_inline_comments_for_kind!(:warning, warnings, danger_threads, previous_violations["warning"], danger_id: danger_id)
         errors = submit_inline_comments_for_kind!(:error, errors, danger_threads, previous_violations["error"], danger_id: danger_id)
@@ -185,7 +184,7 @@ module Danger
         is_markdown_content = kind == :markdown
         emoji = { warning: "warning", error: "no_entry_sign", message: "book" }[kind]
 
-        messages.reject do |m|
+        messages.reject do |m| # rubocop:todo Metrics/BlockLength
           next false unless m.file && m.line
 
           # Once we know we're gonna submit it, we format it

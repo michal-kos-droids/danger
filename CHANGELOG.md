@@ -11,11 +11,37 @@
 ## master
 
 <!-- Your comment below here -->
+* Remove upper bound constraint on the git gem - [@andrewmarkle](https://github.com/andrewmarkle) [#1526](https://github.com/danger/danger/pull/1526)
+* Add "Add GitLab Merge Request support" again with fix - [@manicmaniac](https://github.com/manicmaniac) [#1522](https://github.com/danger/danger/pull/1522)
+<!-- Your comment above here -->
+
+## 9.5.3
+
+* Revert "Add GitLab Merge Request support with a new `mr` command" - [@manicmaniac](https://github.com/manicmaniac) [#1521](https://github.com/danger/danger/pull/1521)
+
+## 9.5.2
+
+* Add GitLab Merge Request support with a new `mr` command - [@jtslear](https://github.com/jtslear) [#1516](https://github.com/danger/danger/pull/1516)
+* Support v4 of colored2 gem to make danger work with --enable-frozen-string-literal RUBYOPT of newer Ruby versions - [@eiskrenkov](https://github.com/eiskrenkov) [#1513](https://github.com/danger/danger/pull/1513)
+* Support ruby-git 2.x - [@manicmaniac](https://github.com/manicmaniac) [#1511](https://github.com/danger/danger/pull/1511)
+* Allow terminal-table versions through 4.x - [@murilooon](https://github.com/murilooon) [#1508](https://github.com/danger/danger/pull/1508)
+* Bump kramdown to 2.5.1 - [@manicmaniac](https://github.com/manicmaniac) [#1514](https://github.com/danger/danger/pull/1514)
+
+## 9.5.1
+
+* Update ruby version in Dockerfile to 3.2 - [@okatatuki](https://github.com/okatatuki) [#1472](https://github.com/danger/danger/pull/1472) [#1473](https://github.com/danger/danger/pull/1473)
+* Fix: git diff called by methods like `git.modified_files` may fail with error ``[!] Invalid `Dangerfile` file: git ... 'diff' '-p' 'true' '{head}'  2>&1`` - [@nagataaaas](https://github.com/nagataaaas) [#1498](https://github.com/danger/danger/pull/1498)
+* Add gems ejected from future stdlib - [@manicmaniac](https://github.com/manicmaniac) [#1499](https://github.com/danger/danger/pull/1499)
+
+## 9.5.0
+
 * Always use `LocalOnlyGitRepo` source with `dry_run` command - [@imaginaris](https://github.com/imaginaris) [#1452](https://github.com/danger/danger/pull/1452)
 * Support repository access token on Bitbucket Cloud - [@manicmaniac](https://github.com/manicmaniac) [#1481](https://github.com/danger/danger/pull/1481)
 * Update "What is Danger?" in README - [@manicmaniac](https://github.com/manicmaniac) [#1482](https://github.com/danger/danger/pull/1482)
 * Fix broken YARD documents - [@manicmaniac](https://github.com/manicmaniac) [#1484](https://github.com/danger/danger/pull/1484)
-<!-- Your comment above here -->
+* Add Ruby 3.3 to test matrix - [@ydah](https://github.com/ydah) [#1486](https://github.com/danger/danger/pull/1486)
+* Bump rubocop version and fix new offenses - [@ydah](https://github.com/ydah) [#1487](https://github.com/danger/danger/pull/1487)
+* Use GitHub files API with pagination for PR diff - [@timbaev](https://github.com/timbaev) [#1491](https://github.com/danger/danger/pull/1491)
 
 ## 9.4.3
 
